@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================
+   ELITE AI CHATBOT SCROLLBAR
+================================ */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+            rgba(56, 189, 248, 0.7),
+            rgba(99, 102, 241, 0.7));
+    border-radius: 999px;
+}
+
+/* ================================
+   AI NEURAL BACKGROUND
+================================ */
+@layer utilities {
+
+    .ai-bg {
+        @apply bg-slate-50 dark:bg-[#020617] transition-colors duration-500;
+        background-image:
+            radial-gradient(at 20% 10%, rgba(14, 165, 233, 0.15) 0, transparent 40%),
+            radial-gradient(at 80% 0%, rgba(99, 102, 241, 0.15) 0, transparent 45%),
+            radial-gradient(at 50% 100%, rgba(56, 189, 248, 0.15) 0, transparent 50%);
+        background-size: 200% 200%;
+        animation: ai-flow 20s ease infinite;
+    }
+
+    /* ================================
+       CHAT CONTAINER
+    ================================ */
+    .chat-shell {
+        @apply relative flex flex-col bg-white/80 dark:bg-slate-950/70 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-3xl shadow-2xl dark:shadow-[0_40px_100px_rgba(0, 0, 0, 0.8)] transition-all duration-300;
+    }
+
+    /* ================================
+       CHAT MESSAGE CARDS
+    ================================ */
+    .chat-bubble {
+        @apply relative max-w-[80%] px-5 py-4 rounded-2xl text-sm leading-relaxed backdrop-blur-xl transition-all duration-300 shadow-sm;
+    }
+
+    /* USER */
+    .chat-user {
+        @apply chat-bubble ml-auto bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20;
+    }
+
+    /* AI */
+    .chat-ai {
+        @apply chat-bubble mr-auto bg-white/90 dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 shadow-sm;
+    }
+
+    /* ================================
+       AI GLOW STRIP
+    ================================ */
+    .ai-glow {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            linear-gradient(120deg,
+                transparent,
+                rgba(56, 189, 248, 0.15),
+                rgba(99, 102, 241, 0.15),
+                transparent);
+        opacity: 0.35;
+    }
+
+    /* ================================
+       CHAT INPUT BAR
+    ================================ */
+    .chat-input {
+        @apply flex items-center gap-3 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-3 shadow-lg dark:shadow-none transition-colors duration-300;
+    }
+
+    .chat-input input {
+        @apply flex-1 bg-transparent outline-none text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500;
+    }
+
+    /* ================================
+       SEND BUTTON (INTELLIGENT)
+    ================================ */
+    .btn-send {
+        @apply px-4 py-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300;
+    }
+
+    /* ================================
+       AI TEXT GLOW
+    ================================ */
+    .ai-text-glow {
+        @apply drop-shadow-md dark:drop-shadow-[0_0_20px_rgba(56, 189, 248, 0.5)];
+    }
+
+    /* ================================
+       STATUS / THINKING DOTS
+    ================================ */
+    .thinking-dots span {
+        animation: blink 1.4s infinite both;
+    }
+
+    .thinking-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .thinking-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes ai-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.2;
+    }
+}
