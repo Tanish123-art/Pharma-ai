@@ -1,32 +1,32 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  darkMode: 'class', // Enable class-based dark mode
+  darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       colors: {
-        background: '#0a0a0f', // Deepest charcoal black
-        surface: '#12121a', // Slightly lighter for cards
-        surfaceHighlight: '#1a1a24', // Hover state
-        slate: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          850: '#0f172a',
-          900: '#020617',
-          950: '#02040a',
+        // Medical-grade color palette
+        medical: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#b9e5fe',
+          300: '#7cd4fd',
+          400: '#36bffa',
+          500: '#0ca5eb',
+          600: '#0084c9',
+          700: '#0169a3',
+          800: '#065986',
+          900: '#0b4a6f',
+          950: '#072f4a',
         },
-        primary: {
+        teal: {
           50: '#f0fdfa',
           100: '#ccfbf1',
           200: '#99f6e4',
-          300: '#5eead4', // Teal/Cyan hint for modern look
+          300: '#5eead4',
           400: '#2dd4bf',
           500: '#14b8a6',
           600: '#0d9488',
@@ -35,17 +35,25 @@ export default {
           900: '#134e4a',
           950: '#042f2e',
         },
-        indigo: { // Keeping for accents
-          500: '#6366f1',
-          600: '#4f46e5',
-        }
+        mint: {
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e',
+          600: '#16a34a',
+        },
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
-        'glass-sm': '0 4px 16px 0 rgba(0, 0, 0, 0.2)',
-        'neumorphic': '20px 20px 60px #09090d, -20px -20px 60px #1e1e27',
-        'neumorphic-sm': '5px 5px 10px #0d0d12, -5px -5px 10px #21212c',
-        'glow': '0 0 20px rgba(94, 234, 212, 0.3)', // Primary glow
+        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+        'glass-md': '0 12px 40px 0 rgba(31, 38, 135, 0.1)',
+        'glass-lg': '0 20px 60px 0 rgba(31, 38, 135, 0.12)',
+        'medical': '0 4px 24px rgba(12, 165, 235, 0.15)',
+        'medical-lg': '0 8px 40px rgba(12, 165, 235, 0.2)',
+        'teal-glow': '0 0 20px rgba(20, 184, 166, 0.3)',
+        'card': '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+        'card-hover': '0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04)',
       },
       animation: {
         'blob': 'blob 10s infinite',
@@ -53,11 +61,25 @@ export default {
         'fade-in': 'fadeIn 0.4s ease-out forwards',
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 6s ease-in-out infinite',
+        'float-slow': 'float 8s ease-in-out infinite',
+        'float-delayed': 'float 7s ease-in-out infinite 2s',
+        'spin-slow': 'spin 20s linear infinite',
+        'spin-reverse': 'spinReverse 15s linear infinite',
+        'heartbeat': 'heartbeat 2s ease-in-out infinite',
+        'dna-rotate': 'dnaRotate 4s linear infinite',
+        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-down': 'slideDown 0.3s ease-out forwards',
+        'particle-float': 'particleFloat 12s ease-in-out infinite',
+        'molecule-spin': 'moleculeSpin 8s linear infinite',
+        'wave': 'wave 3s ease-in-out infinite',
+        'scale-in': 'scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'shimmer': 'shimmer 2s infinite',
+        'gradient-shift': 'gradientShift 8s ease infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '50%': { transform: 'translateY(-12px)' },
         },
         blob: {
           '0%': { transform: 'translate(0px, 0px) scale(1)' },
@@ -73,29 +95,61 @@ export default {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        'gradient-xy': {
-          '0%, 100%': {
-            'background-size': '400% 400%',
-            'background-position': 'left center'
-          },
-          '50%': {
-            'background-size': '200% 200%',
-            'background-position': 'right center'
-          },
+        spinReverse: {
+          '0%': { transform: 'rotate(360deg)' },
+          '100%': { transform: 'rotate(0deg)' },
+        },
+        heartbeat: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '14%': { transform: 'scale(1.15)' },
+          '28%': { transform: 'scale(1)' },
+          '42%': { transform: 'scale(1.1)' },
+          '70%': { transform: 'scale(1)' },
+        },
+        dnaRotate: {
+          '0%': { transform: 'rotateY(0deg)' },
+          '100%': { transform: 'rotateY(360deg)' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        particleFloat: {
+          '0%': { transform: 'translate(0, 0) scale(1)', opacity: '0.4' },
+          '25%': { transform: 'translate(30px, -40px) scale(1.1)', opacity: '0.7' },
+          '50%': { transform: 'translate(-20px, -80px) scale(0.9)', opacity: '0.5' },
+          '75%': { transform: 'translate(40px, -30px) scale(1.05)', opacity: '0.6' },
+          '100%': { transform: 'translate(0, 0) scale(1)', opacity: '0.4' },
+        },
+        moleculeSpin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        wave: {
+          '0%, 100%': { transform: 'scaleY(1)' },
+          '50%': { transform: 'scaleY(1.5)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
         shimmer: {
-          '100%': { transform: 'translateX(100%)' }
-        }
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        gradientShift: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #2E72BF 0deg, #C238BD 180deg, #2E72BF 360deg)',
-      },
-      boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.05)',
-        'glass-hover': '0 12px 40px 0 rgba(31, 38, 135, 0.1)',
-        'glow': '0 0 20px rgba(14, 165, 233, 0.4)',
-        'neon': '0 0 10px rgba(14, 165, 233, 0.5), 0 0 20px rgba(99, 102, 241, 0.3)',
+        'medical-gradient': 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdfa 100%)',
+        'medical-gradient-dark': 'linear-gradient(135deg, #0b1929 0%, #0a192f 50%, #091a2a 100%)',
       },
     },
   },

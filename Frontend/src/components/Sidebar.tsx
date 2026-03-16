@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, Search, MoreVertical, Trash2, PanelLeft, Settings, LogOut, Sun, Moon } from 'lucide-react';
+import { Plus, Search, MoreVertical, Trash2, PanelLeft, Settings, LogOut, Sun, Moon, Heart } from 'lucide-react';
 import ConfirmationModal from './ConfirmationModal';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -26,12 +26,10 @@ export default function Sidebar({ sessions, activeSessionId, onSelectSession, on
     const menuRef = useRef<HTMLDivElement>(null);
     const profileMenuRef = useRef<HTMLDivElement>(null);
 
-    // Modal State
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isClearModalOpen, setIsClearModalOpen] = useState(false);
     const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
 
-    // Close menus when clicking outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -73,52 +71,62 @@ export default function Sidebar({ sessions, activeSessionId, onSelectSession, on
     };
 
     return (
-        <div className="w-80 h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-colors duration-200 font-sans">
-            {/* Header / New Chat */}
-            {/* Header / New Chat */}
+        <div className="w-80 h-screen bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-r border-slate-200/60 dark:border-slate-700/30 flex flex-col transition-all duration-300 font-sans">
+            {/* Header */}
             <div className="p-3 pb-2 pt-4">
-                {/* 1. Toggle Button (Top Right) */}
-                <div className="flex justify-end mb-2">
+                {/* Toggle */}
+                <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-medical-500 to-teal-500 flex items-center justify-center shadow-sm">
+                            <Heart className="w-3.5 h-3.5 text-white" />
+                        </div>
+                        <span className="text-sm font-bold text-slate-800 dark:text-white tracking-tight">PharmaAI</span>
+                    </div>
                     <button
                         onClick={onToggle}
-                        className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
                         title="Close Sidebar"
+                        id="sidebar-close"
                     >
-                        <PanelLeft className="w-5 h-5" />
+                        <PanelLeft className="w-4 h-4" />
                     </button>
                 </div>
 
-                {/* 2. New Research Button (Below) */}
-                <div className="flex items-center justify-between mb-2">
-                    <button
-                        onClick={onNewChat}
-                        className="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition-colors font-medium shadow-sm hover:shadow"
-                    >
-                        <Plus className="w-5 h-5" />
-                        <span>New Research</span>
-                    </button>
-                </div>
+                {/* New Research Button */}
+                <button
+                    onClick={onNewChat}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-medical-500 to-teal-500 hover:from-medical-600 hover:to-teal-600 text-white py-3 rounded-xl transition-all duration-300 font-semibold shadow-medical hover:shadow-medical-lg hover:-translate-y-0.5 active:translate-y-0 text-sm"
+                    id="new-research-button"
+                >
+                    <Plus className="w-4 h-4" />
+                    <span>New Research</span>
+                </button>
             </div>
 
             {/* Search */}
-            <div className="px-3 mb-4">
+            <div className="px-3 mb-3">
                 <div className="relative">
-                    <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                         type="text"
                         placeholder="Search history..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 pl-9 pr-4 py-2 rounded-lg text-sm border-transparent focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors placeholder-slate-500"
+                        className="w-full bg-slate-50 dark:bg-slate-800/60 text-slate-800 dark:text-slate-200 pl-9 pr-4 py-2.5 rounded-xl text-sm border border-slate-200/60 dark:border-slate-700/40 focus:border-medical-300 dark:focus:border-medical-600/50 focus:ring-2 focus:ring-medical-500/10 focus:outline-none transition-all placeholder-slate-400"
+                        id="sidebar-search"
                     />
                 </div>
             </div>
 
-            {/* History List */}
+            {/* History */}
             <div className="flex-1 overflow-y-auto px-2 space-y-1 custom-scrollbar">
                 {filteredSessions.length === 0 ? (
-                    <div className="px-4 py-8 text-sm text-slate-500 dark:text-slate-400 text-center flex flex-col items-center">
-                        <p>No research found</p>
+                    <div className="px-4 py-10 text-sm text-slate-400 dark:text-slate-500 text-center">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
+                            <Search className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+                        </div>
+                        <p className="font-medium">No research found</p>
+                        <p className="text-xs mt-1 text-slate-400 dark:text-slate-600">Start a new research session</p>
                     </div>
                 ) : (
                     (() => {
@@ -151,68 +159,68 @@ export default function Sidebar({ sessions, activeSessionId, onSelectSession, on
                             }
                         });
 
-                        // Flag to track if we've shown the Clear History button
                         let clearHistoryShown = false;
 
                         return Object.entries(groups).map(([label, groupSessions]) => {
                             if (groupSessions.length === 0) return null;
 
-                            // Decide if we show Clear History in this header
-                            // We show it in the FIRST populated header
                             const showClearHere = !clearHistoryShown && onClearAll;
                             if (showClearHere) clearHistoryShown = true;
 
                             return (
-                                <div key={label} className="mb-4">
+                                <div key={label} className="mb-3">
                                     <div className="flex items-center justify-between px-3 py-2">
-                                        <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                                        <h3 className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                                             {label}
                                         </h3>
                                         {showClearHere && (
                                             <button
                                                 onClick={handleClearAllClick}
-                                                className="text-xs text-slate-400 hover:text-red-500 transition-colors flex items-center space-x-1"
+                                                className="text-[11px] text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1 font-medium"
                                                 title="Clear History"
+                                                id="clear-history-button"
                                             >
                                                 <Trash2 className="w-3 h-3" />
-                                                <span>Clear History</span>
+                                                <span>Clear</span>
                                             </button>
                                         )}
                                     </div>
 
                                     <div className="space-y-0.5">
                                         {groupSessions.map((session) => (
-                                            <div key={session.id} className="relative group px-2">
+                                            <div key={session.id} className="relative group px-1">
                                                 <button
                                                     onClick={() => onSelectSession(session.id)}
-                                                    className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all text-left pr-8 ${activeSessionId === session.id
-                                                        ? 'bg-blue-50 dark:bg-slate-800 text-blue-700 dark:text-white'
-                                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                                                        }`}
+                                                    className={`w-full flex items-center px-3 py-2.5 rounded-xl transition-all text-left pr-8 text-sm ${
+                                                        activeSessionId === session.id
+                                                            ? 'bg-medical-50 dark:bg-medical-500/10 text-medical-700 dark:text-medical-300 border border-medical-200/50 dark:border-medical-500/20 shadow-sm'
+                                                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                                                    }`}
                                                 >
                                                     <div className="flex-1 overflow-hidden">
-                                                        <p className="text-sm truncate">{session.title || 'Untitled Research'}</p>
+                                                        <p className="truncate font-medium">{session.title || 'Untitled Research'}</p>
                                                     </div>
                                                 </button>
 
-                                                {/* Three Dot Menu */}
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setMenuOpenId(menuOpenId === session.id ? null : session.id);
                                                     }}
-                                                    className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-opacity ${menuOpenId === session.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                                                    className={`absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all ${
+                                                        menuOpenId === session.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                                    }`}
                                                 >
-                                                    <MoreVertical className="w-4 h-4" />
+                                                    <MoreVertical className="w-3.5 h-3.5" />
                                                 </button>
 
                                                 {menuOpenId === session.id && (
-                                                    <div ref={menuRef} className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 py-1 overflow-hidden">
+                                                    <div ref={menuRef} className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-slate-800 rounded-xl shadow-glass-md border border-slate-200/60 dark:border-slate-700/40 z-50 py-1 overflow-hidden animate-fade-in">
                                                         <button
                                                             onClick={(e) => handleDeleteClick(e, session.id)}
-                                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-2"
+                                                            className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 transition-colors"
                                                         >
-                                                            <Trash2 className="w-3 h-3" />
+                                                            <Trash2 className="w-3.5 h-3.5" />
                                                             <span>Delete</span>
                                                         </button>
                                                     </div>
@@ -227,31 +235,28 @@ export default function Sidebar({ sessions, activeSessionId, onSelectSession, on
                 )}
             </div>
 
-            {/* Profile Section (Bottom) */}
-            <div className="p-3 border-t border-slate-200 dark:border-slate-800 relative">
+            {/* Profile Section */}
+            <div className="p-3 border-t border-slate-200/60 dark:border-slate-700/30 relative">
                 {isProfileMenuOpen && (
                     <div
                         ref={profileMenuRef}
-                        className="absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl shadow-2xl p-1 overflow-hidden animate-in fade-in slide-in-from-bottom-2 z-50 ring-1 ring-slate-900/5 dark:ring-white/10"
+                        className="absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-slate-800 rounded-2xl shadow-glass-lg p-1.5 overflow-hidden animate-slide-up z-50 border border-slate-200/60 dark:border-slate-700/40"
                     >
-                        <div className="px-3 py-3 border-b border-slate-100 dark:border-white/10 mb-1">
-                            <div className="font-medium text-sm">{user?.full_name || 'User'}</div>
-                            <div className="text-xs font-bold text-slate-500 dark:text-slate-400 truncate">{user?.email || 'user@example.com'}</div>
+                        <div className="px-3 py-3 border-b border-slate-100 dark:border-slate-700/50 mb-1">
+                            <div className="font-semibold text-sm text-slate-800 dark:text-white">{user?.full_name || 'User'}</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">{user?.email || 'user@example.com'}</div>
                         </div>
 
                         <nav className="space-y-0.5">
                             <button
-                                onClick={() => {
-                                    toggleTheme();
-                                }}
-                                className="w-full text-left px-3 py-2.5 my-1 text-sm bg-slate-100 dark:bg-slate-900/50 hover:bg-slate-200 dark:hover:bg-slate-900/80 rounded-lg flex items-center justify-between transition-colors group border border-slate-200 dark:border-white/5"
+                                onClick={toggleTheme}
+                                className="w-full text-left px-3 py-2.5 text-sm bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900/80 rounded-xl flex items-center justify-between transition-all group border border-slate-200/50 dark:border-slate-700/30"
                             >
-                                <div className="flex items-center space-x-2">
-                                    {theme === 'dark' ? <Moon className="w-4 h-4 text-blue-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
-                                    <span className="font-medium">{theme === 'dark' ? 'Dark mode' : 'Light mode'}</span>
+                                <div className="flex items-center gap-2.5">
+                                    {theme === 'dark' ? <Moon className="w-4 h-4 text-medical-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
+                                    <span className="font-medium text-slate-700 dark:text-slate-200">{theme === 'dark' ? 'Dark mode' : 'Light mode'}</span>
                                 </div>
-                                {/* Simple Toggle Switch Graphic */}
-                                <div className={`w-9 h-5 rounded-full relative transition-colors border border-transparent ${theme === 'dark' ? 'bg-blue-600' : 'bg-slate-200'}`}>
+                                <div className={`w-9 h-5 rounded-full relative transition-colors ${theme === 'dark' ? 'bg-medical-500' : 'bg-slate-200'}`}>
                                     <div className={`absolute top-0.5 w-3.5 h-3.5 bg-white rounded-full shadow-sm transition-transform duration-200 ${theme === 'dark' ? 'translate-x-[18px]' : 'translate-x-0.5'}`} />
                                 </div>
                             </button>
@@ -261,16 +266,17 @@ export default function Sidebar({ sessions, activeSessionId, onSelectSession, on
                                     onSettings();
                                     setIsProfileMenuOpen(false);
                                 }}
-                                className="w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg flex items-center space-x-2 transition-colors"
+                                className="w-full text-left px-3 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors"
                             >
                                 <Settings className="w-4 h-4" />
                                 <span>Settings</span>
                             </button>
 
-                            <div className="h-px bg-slate-100 dark:bg-white/10 my-1" />
+                            <div className="h-px bg-slate-100 dark:bg-slate-700/50 my-1" />
+
                             <button
                                 onClick={onLogout}
-                                className="w-full text-left px-3 py-2 text-sm hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg flex items-center space-x-2 transition-colors text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                                className="w-full text-left px-3 py-2.5 text-sm hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl flex items-center gap-2.5 transition-colors text-red-600 dark:text-red-400"
                             >
                                 <LogOut className="w-4 h-4" />
                                 <span>Log out</span>
@@ -281,13 +287,17 @@ export default function Sidebar({ sessions, activeSessionId, onSelectSession, on
 
                 <button
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                    className={`w-full flex items-center p-2 rounded-xl transition-all ${isProfileMenuOpen ? 'bg-slate-100 dark:bg-slate-800' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                    className={`w-full flex items-center p-2.5 rounded-xl transition-all ${
+                        isProfileMenuOpen ? 'bg-slate-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800'
+                    }`}
+                    id="profile-menu-button"
                 >
-                    <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-medium text-sm shadow-sm">
+                    <div className="w-9 h-9 bg-gradient-to-br from-medical-400 to-teal-400 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-sm">
                         {(user?.full_name || 'U').charAt(0)}
                     </div>
                     <div className="flex-1 text-left px-3 overflow-hidden">
-                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user?.full_name || 'User'}</p>
+                        <p className="text-sm font-semibold text-slate-800 dark:text-white truncate">{user?.full_name || 'User'}</p>
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate">{user?.email || ''}</p>
                     </div>
                     <MoreVertical className="w-4 h-4 text-slate-400" />
                 </button>

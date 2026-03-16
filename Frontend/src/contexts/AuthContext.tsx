@@ -34,17 +34,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const checkAuth = async () => {
+    console.log("Starting auth check...");
+    const timeout = setTimeout(() => {
+      console.warn("Auth check timed out, forcing loading to false");
+      setLoading(false);
+    }, 5000); // 5s safety timeout
+
     const token = localStorage.getItem('access_token');
     if (token) {
       try {
+        console.log("Token found, fetching user...");
         const { data } = await api.get('/auth/me');
+        console.log("User fetched successfully:", data.email);
         setUser(data);
       } catch (error) {
         console.error("Auth check failed", error);
         localStorage.removeItem('access_token');
         setUser(null);
       }
+    } else {
+      console.log("No token found");
     }
+    clearTimeout(timeout);
     setLoading(false);
   };
 

@@ -3,142 +3,577 @@
 @tailwind utilities;
 
 /* ================================
-   ELITE AI CHATBOT SCROLLBAR
+   GLOBAL STYLES & DESIGN SYSTEM
+================================ */
+* {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ================================
+   ELEGANT SCROLLBAR
 ================================ */
 ::-webkit-scrollbar {
-    width: 6px;
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg,
-            rgba(56, 189, 248, 0.7),
-            rgba(99, 102, 241, 0.7));
-    border-radius: 999px;
+  background: linear-gradient(180deg,
+    rgba(14, 165, 233, 0.4),
+    rgba(20, 184, 166, 0.4));
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg,
+    rgba(14, 165, 233, 0.6),
+    rgba(20, 184, 166, 0.6));
 }
 
 /* ================================
-   AI NEURAL BACKGROUND
+   MEDICAL AI BACKGROUND
+================================ */
+.medical-bg {
+  background: linear-gradient(to bottom right, #f8fafc, #f0f9ff, #f0fdfa);
+  position: relative;
+  transition: background-color 0.5s, color 0.5s;
+}
+
+.dark .medical-bg {
+  background: linear-gradient(to bottom right, #0a1628, #0b1a2e, #0a1a28);
+}
+
+.medical-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(14, 165, 233, 0.08) 0, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(20, 184, 166, 0.06) 0, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgba(34, 197, 94, 0.04) 0, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ================================
+   GLASSMORPHISM COMPONENTS
+================================ */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  transition: all 0.3s;
+}
+
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(51, 65, 85, 0.4);
+}
+
+.glass-card-hover:hover {
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+  border-color: #b9e5fe;
+  transform: translateY(-2px);
+}
+
+.dark .glass-card-hover:hover {
+  border-color: rgba(6, 89, 134, 0.4);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(48px);
+  -webkit-backdrop-filter: blur(48px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 60px 0 rgba(31, 38, 135, 0.12);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(51, 65, 85, 0.3);
+}
+
+/* ================================
+   CHAT STYLES
 ================================ */
 @layer utilities {
+  .chat-shell {
+    @apply relative flex flex-col bg-white/80 dark:bg-slate-900/50 backdrop-blur-2xl border border-slate-200/50 dark:border-slate-700/30 rounded-2xl transition-all duration-300;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  }
 
-    .ai-bg {
-        @apply bg-slate-50 dark:bg-[#020617] transition-colors duration-500;
-        background-image:
-            radial-gradient(at 20% 10%, rgba(14, 165, 233, 0.15) 0, transparent 40%),
-            radial-gradient(at 80% 0%, rgba(99, 102, 241, 0.15) 0, transparent 45%),
-            radial-gradient(at 50% 100%, rgba(56, 189, 248, 0.15) 0, transparent 50%);
-        background-size: 200% 200%;
-        animation: ai-flow 20s ease infinite;
-    }
+  .chat-bubble {
+    @apply relative max-w-[80%] px-5 py-4 rounded-2xl text-sm leading-relaxed backdrop-blur-xl transition-all duration-300 shadow-sm;
+  }
 
-    /* ================================
-       CHAT CONTAINER
-    ================================ */
-    .chat-shell {
-        @apply relative flex flex-col bg-white/80 dark:bg-slate-950/70 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-3xl shadow-2xl dark:shadow-[0_40px_100px_rgba(0, 0, 0, 0.8)] transition-all duration-300;
-    }
+  .chat-user {
+    @apply chat-bubble ml-auto text-white shadow-md;
+    background: linear-gradient(to bottom right, #0ca5eb, #14b8a6);
+    box-shadow: 0 4px 14px rgba(12, 165, 235, 0.2);
+  }
 
-    /* ================================
-       CHAT MESSAGE CARDS
-    ================================ */
-    .chat-bubble {
-        @apply relative max-w-[80%] px-5 py-4 rounded-2xl text-sm leading-relaxed backdrop-blur-xl transition-all duration-300 shadow-sm;
-    }
+  .chat-ai {
+    @apply chat-bubble mr-auto bg-white/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/40 text-slate-700 dark:text-slate-200;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
 
-    /* USER */
-    .chat-user {
-        @apply chat-bubble ml-auto bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20;
-    }
+  /* ================================
+     CHAT INPUT BAR
+  ================================ */
+  .chat-input {
+    @apply flex items-center gap-3 bg-white/90 dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 rounded-2xl px-4 py-3 transition-all duration-300;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
 
-    /* AI */
-    .chat-ai {
-        @apply chat-bubble mr-auto bg-white/90 dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 shadow-sm;
-    }
+  .chat-input:focus-within {
+    border-color: #7cd4fd;
+    box-shadow: 0 4px 24px rgba(12, 165, 235, 0.15);
+  }
 
-    /* ================================
-       AI GLOW STRIP
-    ================================ */
-    .ai-glow {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background:
-            linear-gradient(120deg,
-                transparent,
-                rgba(56, 189, 248, 0.15),
-                rgba(99, 102, 241, 0.15),
-                transparent);
-        opacity: 0.35;
-    }
+  .dark .chat-input:focus-within {
+    border-color: rgba(1, 105, 163, 0.5);
+  }
 
-    /* ================================
-       CHAT INPUT BAR
-    ================================ */
-    .chat-input {
-        @apply flex items-center gap-3 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-3 shadow-lg dark:shadow-none transition-colors duration-300;
-    }
+  .chat-input input {
+    @apply flex-1 bg-transparent outline-none text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500;
+  }
 
-    .chat-input input {
-        @apply flex-1 bg-transparent outline-none text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500;
-    }
+  /* ================================
+     BUTTONS
+  ================================ */
+  .btn-medical {
+    @apply px-6 py-3 rounded-xl text-white font-semibold active:scale-[0.98] transition-all duration-300;
+    background: linear-gradient(to right, #0ca5eb, #14b8a6);
+    box-shadow: 0 4px 24px rgba(12, 165, 235, 0.15);
+  }
 
-    /* ================================
-       SEND BUTTON (INTELLIGENT)
-    ================================ */
-    .btn-send {
-        @apply px-4 py-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300;
-    }
+  .btn-medical:hover {
+    background: linear-gradient(to right, #0084c9, #0d9488);
+    box-shadow: 0 8px 40px rgba(12, 165, 235, 0.2);
+  }
 
-    /* ================================
-       AI TEXT GLOW
-    ================================ */
-    .ai-text-glow {
-        @apply drop-shadow-md dark:drop-shadow-[0_0_20px_rgba(56, 189, 248, 0.5)];
-    }
+  .btn-send {
+    @apply p-2.5 rounded-xl text-white hover:scale-105 active:scale-95 transition-all duration-300;
+    background: linear-gradient(to bottom right, #0ca5eb, #14b8a6);
+    box-shadow: 0 4px 24px rgba(12, 165, 235, 0.15);
+  }
 
-    /* ================================
-       STATUS / THINKING DOTS
-    ================================ */
-    .thinking-dots span {
-        animation: blink 1.4s infinite both;
-    }
-
-    .thinking-dots span:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    .thinking-dots span:nth-child(3) {
-        animation-delay: 0.4s;
-    }
+  .btn-send:hover {
+    box-shadow: 0 8px 40px rgba(12, 165, 235, 0.2);
+  }
 }
 
 /* ================================
-   ANIMATIONS
+   MEDICAL ANIMATIONS
+================================ */
+
+/* DNA Helix - Pure CSS */
+.dna-helix {
+  position: relative;
+  width: 80px;
+  height: 320px;
+  perspective: 600px;
+}
+
+.dna-strand {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.dna-pair {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: dna-twist 3s linear infinite;
+}
+
+.dna-node {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ca5eb, #14b8a6);
+  box-shadow: 0 0 12px rgba(12, 165, 235, 0.5);
+}
+
+.dna-node.right {
+  background: linear-gradient(135deg, #14b8a6, #22c55e);
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.5);
+}
+
+.dna-bond {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(12, 165, 235, 0.4), rgba(20, 184, 166, 0.4));
+  margin: 0 4px;
+  border-radius: 1px;
+}
+
+@keyframes dna-twist {
+  0% { transform: rotateY(0deg) scaleX(1); }
+  25% { transform: rotateY(90deg) scaleX(0.2); }
+  50% { transform: rotateY(180deg) scaleX(1); }
+  75% { transform: rotateY(270deg) scaleX(0.2); }
+  100% { transform: rotateY(360deg) scaleX(1); }
+}
+
+/* Heartbeat Line */
+.heartbeat-line {
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  position: relative;
+}
+
+.heartbeat-line svg {
+  width: 200%;
+  height: 100%;
+  animation: heartbeat-scroll 3s linear infinite;
+}
+
+@keyframes heartbeat-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Molecule Network */
+.molecule-node {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ca5eb, #14b8a6);
+  box-shadow: 0 0 8px rgba(12, 165, 235, 0.4);
+}
+
+.molecule-bond {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(12, 165, 235, 0.3), rgba(20, 184, 166, 0.3));
+  transform-origin: left center;
+}
+
+/* Floating Particles */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.particle-medical {
+  background: radial-gradient(circle, rgba(12, 165, 235, 0.6), transparent);
+}
+
+.particle-teal {
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.6), transparent);
+}
+
+.particle-mint {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.5), transparent);
+}
+
+/* Capsule Animation */
+.capsule {
+  width: 20px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  transform: rotate(-30deg);
+}
+
+.capsule-top {
+  height: 50%;
+  background: linear-gradient(135deg, #0ca5eb, #36bffa);
+}
+
+.capsule-bottom {
+  height: 50%;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+}
+
+/* Pulse Ring */
+.pulse-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(12, 165, 235, 0.3);
+  animation: pulseRing 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Password Strength Bar */
+.strength-bar {
+  height: 6px;
+  border-radius: 9999px;
+  transition: all 0.5s ease-out;
+}
+
+/* Step indicator */
+.step-indicator {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: all 0.3s;
+}
+
+.step-active {
+  background: linear-gradient(to bottom right, #0ca5eb, #14b8a6);
+  color: white;
+  box-shadow: 0 4px 24px rgba(12, 165, 235, 0.15);
+}
+
+.step-completed {
+  background-color: #14b8a6;
+  color: white;
+}
+
+.step-inactive {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+}
+
+.dark .step-inactive {
+  background-color: #1e293b;
+}
+
+/* Feature Card */
+.feature-card {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .feature-card {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(51, 65, 85, 0.4);
+}
+
+.feature-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+  transform: translateY(-4px);
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+.feature-icon {
+  transition: transform 0.3s;
+}
+
+/* Animated Stats */
+.stat-card {
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  transition: all 0.3s;
+}
+
+.dark .stat-card {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(51, 65, 85, 0.4);
+}
+
+.stat-bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+.dark .stat-bar {
+  background-color: #1e293b;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: all 1s ease-out;
+  background: linear-gradient(90deg, #0ca5eb, #14b8a6);
+}
+
+/* AI Glow */
+.ai-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg,
+      transparent,
+      rgba(14, 165, 233, 0.08),
+      rgba(20, 184, 166, 0.08),
+      transparent);
+  opacity: 0.5;
+}
+
+/* ================================
+   STANDARD ANIMATIONS
 ================================ */
 @keyframes ai-flow {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes blink {
-    0% {
-        opacity: 0.2;
-    }
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
 
-    20% {
-        opacity: 1;
-    }
+/* Custom scrollbar for sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
 
-    100% {
-        opacity: 0.2;
-    }
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #334155;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #cbd5e1;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #475569;
+}
+
+/* Prose styling for light mode */
+.prose-medical {
+  max-width: none;
+}
+
+.prose-medical h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.025em;
+}
+
+.dark .prose-medical h1 {
+  color: white;
+}
+
+.prose-medical h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.dark .prose-medical h2 {
+  color: #f1f5f9;
+  border-bottom-color: rgba(51, 65, 85, 0.5);
+}
+
+.prose-medical strong {
+  font-weight: 600;
+  color: #0084c9;
+}
+
+.dark .prose-medical strong {
+  color: #36bffa;
+}
+
+.prose-medical ul {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose-medical ul li {
+  margin-top: 0.5rem;
+}
+
+.prose-medical li {
+  color: #475569;
+}
+
+.dark .prose-medical li {
+  color: #cbd5e1;
+}
+
+.prose-medical p {
+  color: #475569;
+  line-height: 1.75;
+}
+
+.dark .prose-medical p {
+  color: #cbd5e1;
+}
+
+/* Animation delays */
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
+.animation-delay-1500 {
+  animation-delay: 1500ms;
+}
+.animation-delay-2000 {
+  animation-delay: 2000ms;
+}
+.animation-delay-3000 {
+  animation-delay: 3000ms;
+}
+.animation-delay-4000 {
+  animation-delay: 4000ms;
 }

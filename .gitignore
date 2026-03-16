@@ -33,3 +33,4 @@ models/
 reports/
 Backend/agents/master_agent_merged/
 Backend/scripts/
+*.json

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Download, Bot, User, Send, Square, Sparkles, TrendingUp, Search } from 'lucide-react';
+import { Download, Bot, User, Send, Square, Sparkles, TrendingUp, Heart, FlaskConical, Microscope, Pill, Activity, BarChart3, FileText, Shield } from 'lucide-react';
 import api from '../lib/api';
 import ReactMarkdown from 'react-markdown';
 import AgentOutputs from './AgentOutputs';
@@ -11,6 +11,123 @@ interface ResearchInterfaceProps {
   onStartResearch: (query: string, title: string, id: string) => void;
 }
 
+/* ─── Animated Molecule SVG for Hero ─── */
+function AnimatedMolecule() {
+  return (
+    <div className="absolute inset-0 opacity-[0.07] dark:opacity-[0.05] pointer-events-none overflow-hidden">
+      <svg width="100%" height="100%" viewBox="0 0 800 600">
+        {/* Central hexagonal structure */}
+        {[0, 60, 120, 180, 240, 300].map((angle, i) => {
+          const rad = (angle * Math.PI) / 180;
+          const cx = 400 + Math.cos(rad) * 100;
+          const cy = 300 + Math.sin(rad) * 100;
+          const nextRad = ((angle + 60) * Math.PI) / 180;
+          const nx = 400 + Math.cos(nextRad) * 100;
+          const ny = 300 + Math.sin(nextRad) * 100;
+          return (
+            <g key={i}>
+              <line x1={cx} y1={cy} x2={nx} y2={ny} stroke="#0ca5eb" strokeWidth="2" opacity="0.5" />
+              <circle cx={cx} cy={cy} r="8" fill="#0ca5eb">
+                <animate attributeName="r" values="8;10;8" dur={`${2 + i * 0.3}s`} repeatCount="indefinite" />
+              </circle>
+              {/* Branch atoms */}
+              {i % 2 === 0 && (
+                <g>
+                  <line x1={cx} y1={cy} x2={cx + Math.cos(rad) * 60} y2={cy + Math.sin(rad) * 60} stroke="#14b8a6" strokeWidth="1.5" opacity="0.4" />
+                  <circle cx={cx + Math.cos(rad) * 60} cy={cy + Math.sin(rad) * 60} r="5" fill="#14b8a6" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;0.9;0.6" dur={`${3 + i * 0.4}s`} repeatCount="indefinite" />
+                  </circle>
+                </g>
+              )}
+            </g>
+          );
+        })}
+        {/* Floating outer particles */}
+        {[
+          { cx: 150, cy: 100, r: 4, dur: 5 }, { cx: 650, cy: 150, r: 3, dur: 7 },
+          { cx: 100, cy: 400, r: 5, dur: 6 }, { cx: 700, cy: 450, r: 4, dur: 8 },
+          { cx: 300, cy: 500, r: 3, dur: 5.5 }, { cx: 550, cy: 80, r: 4, dur: 6.5 },
+        ].map((p, i) => (
+          <circle key={`outer-${i}`} cx={p.cx} cy={p.cy} r={p.r} fill={i % 2 === 0 ? '#0ca5eb' : '#14b8a6'} opacity="0.3">
+            <animate attributeName="cy" values={`${p.cy};${p.cy - 20};${p.cy}`} dur={`${p.dur}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur={`${p.dur}s`} repeatCount="indefinite" />
+          </circle>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ─── Feature Card Component ─── */
+function FeatureCard({ icon: Icon, title, description, color, onClick }: {
+  icon: any;
+  title: string;
+  description: string;
+  color: string;
+  onClick: () => void;
+}) {
+  const colorMap: Record<string, string> = {
+    blue: 'bg-medical-50 dark:bg-medical-500/10 text-medical-600 dark:text-medical-400 group-hover:bg-medical-100 dark:group-hover:bg-medical-500/15',
+    purple: 'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 group-hover:bg-purple-100 dark:group-hover:bg-purple-500/15',
+    amber: 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/15',
+    teal: 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 group-hover:bg-teal-100 dark:group-hover:bg-teal-500/15',
+  };
+
+  const borderMap: Record<string, string> = {
+    blue: 'hover:border-medical-300 dark:hover:border-medical-500/30',
+    purple: 'hover:border-purple-300 dark:hover:border-purple-500/30',
+    amber: 'hover:border-amber-300 dark:hover:border-amber-500/30',
+    teal: 'hover:border-teal-300 dark:hover:border-teal-500/30',
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      className={`group feature-card text-left border border-slate-200/60 dark:border-slate-700/30 ${borderMap[color]}`}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`p-2.5 rounded-xl feature-icon ${colorMap[color]} transition-colors duration-300`}>
+          <Icon className="w-5 h-5" />
+        </div>
+        <span className="font-bold text-slate-800 dark:text-white text-sm">{title}</span>
+      </div>
+      <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{description}</p>
+    </button>
+  );
+}
+
+/* ─── Stat Card with Animated Bar ─── */
+function StatCard({ label, value, percentage, color }: {
+  label: string; value: string; percentage: number; color: string;
+}) {
+  const [animatedWidth, setAnimatedWidth] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimatedWidth(percentage), 500);
+    return () => clearTimeout(timer);
+  }, [percentage]);
+
+  return (
+    <div className="stat-card">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</span>
+        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{value}</span>
+      </div>
+      <div className="stat-bar">
+        <div
+          className="stat-bar-fill"
+          style={{
+            width: `${animatedWidth}%`,
+            background: color === 'medical' ? 'linear-gradient(90deg, #0ca5eb, #36bffa)' :
+                        color === 'teal' ? 'linear-gradient(90deg, #14b8a6, #5eead4)' :
+                        'linear-gradient(90deg, #22c55e, #86efac)'
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function ResearchInterface({ sessionId, onStartResearch }: ResearchInterfaceProps) {
   const [session, setSession] = useState<any>(null);
   const [polling, setPolling] = useState(true);
@@ -19,20 +136,18 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Agent Selection State
   const [isAutoSelect, setIsAutoSelect] = useState(true);
   const [selectedAgents, setSelectedAgents] = useState<string[]>(['web', 'iqvia', 'clinical', 'patent', 'exim', 'internal']);
   const [showAgentMenu, setShowAgentMenu] = useState(false);
   const agentMenuRef = useRef<HTMLDivElement>(null);
 
-  // Initial Load & Polling
   useEffect(() => {
     if (sessionId) {
-      setSession(null); // Clear previous to prevent flickering old data
+      setSession(null);
       setPolling(true);
       loadSession(sessionId);
     } else {
-      setSession(null); // Reset for new chat
+      setSession(null);
     }
   }, [sessionId]);
 
@@ -41,12 +156,11 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
     if (sessionId && polling) {
       interval = setInterval(() => {
         loadSession(sessionId);
-      }, 3000); // 3s polling
+      }, 3000);
     }
     return () => clearInterval(interval);
   }, [sessionId, polling]);
 
-  // Click Outside to close Agent Menu
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (agentMenuRef.current && !agentMenuRef.current.contains(event.target as Node)) {
@@ -61,7 +175,6 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
     try {
       const { data } = await api.get(`/research/sessions/${id}`);
       setSession(data);
-
       if (data.status === 'completed' || data.status === 'failed' || data.status === 'cancelled') {
         setPolling(false);
       }
@@ -83,10 +196,8 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
   const handleStop = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!session?.id) return;
-
     try {
       await api.post(`/research/sessions/${session.id}/stop`);
-      // Optimistically update status to avoid race conditions with polling
       setSession((prev: any) => prev ? { ...prev, status: 'cancelled' } : null);
     } catch (error) {
       console.error("Failed to stop research", error);
@@ -103,22 +214,14 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
     if (e) e.preventDefault();
     if (!input.trim() || isSubmitting) return;
 
-    if (sessionId) {
-      // logic for follow up if needed
-    }
-
     setIsSubmitting(true);
     try {
       const title = input.slice(0, 50) + (input.length > 50 ? '...' : '');
-
-      // Prepare payload
       const payload: any = { quote: input, title, query: input };
       if (!isAutoSelect) {
         payload.agents = selectedAgents;
       }
-
       const { data } = await api.post('/research/start', payload);
-
       onStartResearch(input, title, data.id);
       setInput('');
     } catch (error) {
@@ -139,10 +242,8 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
         setExecutionTime(prev => prev + 1);
       }, 1000);
 
-      // Trigger notification if running > 45s and not yet notified
       if (executionTime > 45 && !longRunningNotified) {
         setLongRunningNotified(true);
-        // Send notification to backend
         api.post('/notifications', {
           title: "Extended Analysis",
           message: "The current research task is complex and taking longer than usual. Please wait.",
@@ -156,51 +257,34 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
     return () => clearInterval(timer);
   }, [isProcessing, executionTime, longRunningNotified]);
 
-  // Safe report extraction with fallback cleaning
   const getCleanReport = () => {
     let report = session?.findings?.final_report || session?.findings?.summary;
     if (!report) return null;
-
     if (typeof report !== 'string') {
-      // If it's an object, try to extract summary
       if (typeof report === 'object' && report.summary) return report.summary;
-      // Do NOT dump JSON stringified
       return "Reviewing the detailed findings below will provide the best insights. (Abstract generation pending)";
     }
-
-    // Check if the report is actually a JSON string (LLM failure to separate)
     if (report.trim().startsWith('{')) {
       try {
         const parsed = JSON.parse(report);
         if (parsed.summary) return parsed.summary;
         if (parsed.final_report) return parsed.final_report;
-        // If it's the raw/findings dict, don't show it
         return "Reviewing the detailed findings below will provide the best insights. (Abstract generation pending)";
       } catch (e) {
-        // Not valid JSON, continue
-        // If it looks like JSON but failed parsing, it might be partial. 
-        // Safer to hide it if it looks completely like code.
         if (report.includes('": "') || report.includes('": [') || report.includes('": {')) {
           return "Reviewing the detailed findings below will provide the best insights.";
         }
       }
     }
-
-    // Clean visualization data artifacts if leaked
     report = report.replace(/<\s*viz_data\s*>[\s\S]*?<\s*\/\s*viz_data\s*>/gi, '');
-    report = report.replace(/<\s*viz_data\s*>[\s\S]*/gi, ''); // Handle incomplete tag
-
-    // Clean executive summary tags
+    report = report.replace(/<\s*viz_data\s*>[\s\S]*/gi, '');
     report = report.replace(/<\s*executive_summary\s*>/gi, '');
     report = report.replace(/<\s*\/\s*executive_summary\s*>/gi, '');
     report = report.replace(/\[executivesummary\]:?/gi, '');
     report = report.replace(/\[viz_data\]:?/gi, '');
-
-    // Fallback: If report still contains the prompt artifact "Findings: {"
     if (report.includes('Findings: {') || report.includes('"_plan": [')) {
       return "Reviewing the detailed findings below will provide the best insights. (Abstract generation pending)";
     }
-
     return report;
   };
 
@@ -208,110 +292,131 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
 
   return (
     <div className="flex flex-col h-full bg-transparent relative">
-      {/* Header (Only if session active) */}
+      {/* Session Header */}
       {session && (
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/20 dark:border-slate-700/30 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md sticky top-0 z-10 shrink-0">
-          <div className="flex items-center space-x-3 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/40 dark:border-slate-700/20 bg-white/50 dark:bg-slate-900/30 backdrop-blur-md sticky top-0 z-10 shrink-0">
+          <div className="flex items-center gap-3 overflow-hidden">
             {isProcessing ? (
               <div className="flex h-2.5 w-2.5 relative flex-shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-medical-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-medical-500" />
               </div>
             ) : (
-              <div className="h-2.5 w-2.5 rounded-full bg-green-500 flex-shrink-0 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+              <div className="h-2.5 w-2.5 rounded-full bg-teal-500 flex-shrink-0 shadow-teal-glow" />
             )}
-            <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate shadow-sm">
+            <h2 className="text-sm font-bold text-slate-800 dark:text-white truncate">
               {session.title || 'Ongoing Research'}
             </h2>
           </div>
         </div>
       )}
 
-      {/* Content / Chat Area */}
+      {/* Content Area */}
       <div className="flex-1 overflow-y-auto px-4 md:px-0 py-6 custom-scrollbar">
         <div className="max-w-3xl mx-auto space-y-8 pb-2">
 
+          {/* ═══════════ HOME / WELCOME SCREEN ═══════════ */}
           {!session && !sessionId && (
-            <div className="flex flex-col items-center justify-start pt-12 text-center space-y-8 px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="space-y-4">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/30 ring-4 ring-white/20 backdrop-blur-sm">
-                  <Bot className="w-12 h-12 text-white" />
+            <div className="flex flex-col items-center justify-start pt-8 text-center space-y-10 px-4 animate-fade-in-up relative">
+              <AnimatedMolecule />
+
+              {/* Hero */}
+              <div className="space-y-5 relative z-10">
+                <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto" style={{
+                  background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+                  boxShadow: '0 8px 40px rgba(6, 182, 212, 0.25), 0 0 0 4px rgba(6, 182, 212, 0.1)',
+                }}>
+                  <Heart className="w-10 h-10 text-white animate-heartbeat" />
                 </div>
-                <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900 dark:from-white dark:via-blue-200 dark:to-white tracking-tight drop-shadow-sm">
-                  PharmaAI Research Agent
+                <h1 className="text-4xl font-extrabold tracking-tight text-slate-800 dark:text-white">
+                  PharmaAI Research
+                  <span style={{
+                    background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}> Agent</span>
                 </h1>
-                <p className="text-slate-600 dark:text-slate-300 max-w-lg mx-auto text-lg font-medium">
-                  Deep-dive market analysis, patent landscapes, and clinical trial intelligence in seconds.
+                <p className="text-slate-600 dark:text-slate-400 max-w-lg mx-auto text-base leading-relaxed">
+                  Deep-dive market analysis, patent landscapes, and clinical trial intelligence powered by advanced AI.
                 </p>
               </div>
 
-              {/* Suggestions Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl text-left">
-                <button onClick={() => setInput("Analyze global market for GLP-1 agonists")} className="group p-5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-400 hover:bg-white/80 dark:hover:bg-slate-800/80 rounded-2xl transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="p-2.5 bg-blue-100/80 dark:bg-blue-900/50 rounded-xl text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                      <TrendingUp className="w-6 h-6" />
-                    </div>
-                    <span className="font-bold text-slate-900 dark:text-white">Market Analysis</span>
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">"Analyze global market for GLP-1 agonists"</p>
-                </button>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-3 w-full max-w-xl relative z-10">
+                <StatCard label="Active Trials" value="12,847" percentage={78} color="medical" />
+                <StatCard label="Patents Indexed" value="2.1M+" percentage={92} color="teal" />
+                <StatCard label="Molecules" value="48,392" percentage={65} color="green" />
+              </div>
 
-                <button onClick={() => setInput("Find new indications for Metformin")} className="group p-5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-2 border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-400 hover:bg-white/80 dark:hover:bg-slate-800/80 rounded-2xl transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="p-2.5 bg-purple-100/80 dark:bg-purple-900/50 rounded-xl text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
-                      <Sparkles className="w-6 h-6" />
-                    </div>
-                    <span className="font-bold text-slate-900 dark:text-white">Repurposing</span>
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">"Find new indications for Metformin"</p>
-                </button>
+              {/* Feature Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl text-left relative z-10">
+                <FeatureCard
+                  icon={TrendingUp}
+                  title="Market Analysis"
+                  description="Analyze global market for GLP-1 agonists"
+                  color="blue"
+                  onClick={() => setInput("Analyze global market for GLP-1 agonists")}
+                />
+                <FeatureCard
+                  icon={FlaskConical}
+                  title="Drug Repurposing"
+                  description="Find new indications for Metformin"
+                  color="purple"
+                  onClick={() => setInput("Find new indications for Metformin")}
+                />
+                <FeatureCard
+                  icon={FileText}
+                  title="Patent Search"
+                  description="Overview of CRISPR delivery patents"
+                  color="amber"
+                  onClick={() => setInput("Overview of CRISPR delivery patents")}
+                />
+                <FeatureCard
+                  icon={Microscope}
+                  title="Clinical Intel"
+                  description="List ongoing Phase 3 Alzheimer's trials"
+                  color="teal"
+                  onClick={() => setInput("List ongoing Phase 3 Alzheimer's trials")}
+                />
+              </div>
 
-                <button onClick={() => setInput("Overview of CRISPR delivery patents")} className="group p-5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-2 border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-400 hover:bg-white/80 dark:hover:bg-slate-800/80 rounded-2xl transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="p-2.5 bg-amber-100/80 dark:bg-amber-900/50 rounded-xl text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform">
-                      <Search className="w-6 h-6" />
-                    </div>
-                    <span className="font-bold text-slate-900 dark:text-white">Patent Search</span>
+              {/* Capabilities Strip */}
+              <div className="flex flex-wrap items-center justify-center gap-4 relative z-10">
+                {[
+                  { icon: BarChart3, label: 'Market Data' },
+                  { icon: Pill, label: 'Drug Intel' },
+                  { icon: Activity, label: 'Clinical Trials' },
+                  { icon: Shield, label: 'Patent DB' },
+                ].map(({ icon: Icon, label }) => (
+                  <div key={label} className="flex items-center gap-2 px-3 py-1.5 bg-white/70 dark:bg-slate-800/40 backdrop-blur-sm rounded-full border border-slate-200/50 dark:border-slate-700/30 text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    <Icon className="w-3.5 h-3.5" style={{ color: '#06b6d4' }} />
+                    <span>{label}</span>
                   </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">"Overview of CRISPR delivery patents"</p>
-                </button>
-
-                <button onClick={() => setInput("List ongoing Phase 3 Alzheimer's trials")} className="group p-5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-400 hover:bg-white/80 dark:hover:bg-slate-800/80 rounded-2xl transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="p-2.5 bg-emerald-100/80 dark:bg-emerald-900/50 rounded-xl text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
-                      <Bot className="w-6 h-6" />
-                    </div>
-                    <span className="font-bold text-slate-900 dark:text-white">Clinical Intel</span>
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">"List ongoing Phase 3 Alzheimer's trials"</p>
-                </button>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Messages */}
-          {/* Messages */}
+          {/* ═══════════ MESSAGES ═══════════ */}
           {session && (
             <>
               {/* User Query */}
-              <div className="flex justify-end px-4 animate-in slide-in-from-bottom-5 fade-in duration-500">
-                <div className="flex space-x-4 max-w-[85%] flex-row-reverse space-x-reverse group">
-                  <div className="w-10 h-10 bg-slate-800/50 backdrop-blur-md rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <User className="w-5 h-5 text-indigo-300" />
+              <div className="flex justify-end px-4 animate-fade-in-up">
+                <div className="flex gap-3 max-w-[85%] flex-row-reverse group">
+                  <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-700 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center flex-shrink-0 border border-slate-300/20 dark:border-slate-600/30 shadow-card group-hover:scale-105 transition-transform duration-300">
+                    <User className="w-5 h-5 text-white" />
                   </div>
                   <div className="chat-user">
                     <p className="font-medium tracking-wide">{session.query?.query || session.query?.quote}</p>
-                    <div className="absolute -bottom-1 -right-1 w-20 h-20 bg-white/10 blur-2xl rounded-full -z-10 group-hover:bg-white/20 transition-all" />
                   </div>
                 </div>
               </div>
 
               {/* AI Response */}
-              <div className="flex justify-start px-4 animate-in slide-in-from-bottom-5 fade-in duration-700 delay-150">
-                <div className="flex space-x-4 w-full max-w-full">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0 mt-2 shadow-[0_0_20px_rgba(6,182,212,0.5)] ring-1 ring-white/30 animate-pulse-slow">
-                    <Bot className="w-6 h-6 text-white" />
+              <div className="flex justify-start px-4 animate-fade-in-up" style={{ animationDelay: '150ms' }}>
+                <div className="flex gap-3 w-full max-w-full">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-medical-500 to-teal-500 flex items-center justify-center flex-shrink-0 mt-2 shadow-medical ring-2 ring-medical-500/20">
+                    <Bot className="w-5 h-5 text-white" />
                   </div>
 
                   <div className="flex-1 space-y-4 max-w-[95%] min-w-0">
@@ -319,18 +424,17 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
                       {isProcessing && !finalReport ? (
                         <div className="flex items-center gap-4 py-2">
                           <div className="flex gap-1.5">
-                            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-[blink_1.4s_infinite_both]"></div>
-                            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-[blink_1.4s_infinite_both_0.2s]"></div>
-                            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-[blink_1.4s_infinite_both_0.4s]"></div>
+                            <div className="w-2 h-2 bg-medical-400 rounded-full animate-[blink_1.4s_infinite_both]" />
+                            <div className="w-2 h-2 bg-medical-400 rounded-full animate-[blink_1.4s_infinite_both_0.2s]" />
+                            <div className="w-2 h-2 bg-medical-400 rounded-full animate-[blink_1.4s_infinite_both_0.4s]" />
                           </div>
-                          <span className="text-sm font-medium text-cyan-300 animate-pulse tracking-wide font-mono">
-                            {executionTime > 30 ? "ANALYZING_COMPLEX_DATA..." : "ORCHESTRATING_AGENTS..."}
+                          <span className="text-sm font-medium text-medical-500 dark:text-medical-400 animate-pulse tracking-wide">
+                            {executionTime > 30 ? "Analyzing complex data..." : "Orchestrating research agents..."}
                           </span>
                         </div>
                       ) : finalReport ? (
                         <div className="space-y-6 relative z-10">
-                          {/* Clean Text Summary */}
-                          <div className="prose prose-invert prose-p:text-slate-300 prose-headings:text-slate-100 prose-strong:text-cyan-300 max-w-none leading-relaxed">
+                          <div className="prose-medical">
                             <ReactMarkdown
                               components={{
                                 code(props) {
@@ -341,16 +445,16 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
                                     return <MermaidDiagram chart={String(children).replace(/\n$/, '')} />;
                                   }
                                   return (
-                                    <code className={`${className} bg-black/30 px-1.5 py-0.5 rounded text-cyan-200 border border-cyan-500/20`} {...rest}>
+                                    <code className={`${className} bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-medical-600 dark:text-medical-400 text-sm border border-slate-200/50 dark:border-slate-700/30`} {...rest}>
                                       {children}
                                     </code>
                                   );
                                 },
-                                h1: ({ node, ...props }) => <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 mt-6 mb-4 tracking-tight" {...props} />,
-                                h2: ({ node, ...props }) => <h2 className="text-xl font-semibold text-slate-100 mt-6 mb-3 border-b border-white/5 pb-2 flex items-center gap-2" {...props} />,
-                                strong: ({ node, ...props }) => <strong className="font-semibold text-indigo-300" {...props} />,
+                                h1: ({ node, ...props }) => <h1 className="text-2xl font-bold text-slate-800 dark:text-white mt-6 mb-4 tracking-tight" {...props} />,
+                                h2: ({ node, ...props }) => <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mt-6 mb-3 border-b border-slate-200 dark:border-slate-700/30 pb-2" {...props} />,
+                                strong: ({ node, ...props }) => <strong className="font-semibold text-medical-600 dark:text-medical-400" {...props} />,
                                 ul: ({ node, ...props }) => <ul className="space-y-2 my-4" {...props} />,
-                                li: ({ node, ...props }) => <li className="flex gap-2 text-slate-300" {...props} />,
+                                li: ({ node, ...props }) => <li className="text-slate-600 dark:text-slate-300" {...props} />,
                               }}
                             >
                               {finalReport}
@@ -358,26 +462,27 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
                           </div>
                         </div>
                       ) : (
-                        <span className="text-slate-500 italic">Analysis failed or no report generated.</span>
+                        <span className="text-slate-400 italic">Analysis failed or no report generated.</span>
                       )}
 
-                      {/* Download Button */}
+                      {/* Export */}
                       {session.findings?.final_report && (
-                        <div className="flex justify-end pt-5 mt-5 border-t border-white/5">
+                        <div className="flex justify-end pt-5 mt-5 border-t border-slate-200/50 dark:border-slate-700/20">
                           <button
                             onClick={handleDownloadReport}
-                            className="group/btn flex items-center gap-2 text-xs font-bold text-white bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-lg transition-all"
+                            className="group/btn flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 hover:bg-medical-50 dark:hover:bg-medical-500/10 border border-slate-200/60 dark:border-slate-700/30 hover:border-medical-300 dark:hover:border-medical-500/30 px-4 py-2 rounded-xl transition-all"
+                            id="export-report-button"
                           >
                             <Download className="w-3.5 h-3.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                            <span>EXPORT REPORT</span>
+                            <span>Export Report</span>
                           </button>
                         </div>
                       )}
 
-                      {/* Individual Agent Findings */}
+                      {/* Agent Findings */}
                       {session.findings && (
-                        <div className="mt-8 pt-6 border-t border-white/5">
-                          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Intelligence Sources</h3>
+                        <div className="mt-8 pt-6 border-t border-slate-200/50 dark:border-slate-700/20">
+                          <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Intelligence Sources</h3>
                           <AgentOutputs findings={session.findings} />
                         </div>
                       )}
@@ -392,35 +497,39 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
         </div>
       </div>
 
-      {/* Input Bar (Fixed Bottom) */}
-      <div className="p-4 bg-gradient-to-t from-[#020617] via-[#020617]/90 to-transparent z-20">
-        <div className="max-w-3xl mx-auto relative content-center">
+      {/* ═══════════ INPUT BAR ═══════════ */}
+      <div className="p-4 bg-gradient-to-t from-white dark:from-[#0a1628] via-white/90 dark:via-[#0a1628]/90 to-transparent z-20">
+        <div className="max-w-3xl mx-auto relative">
 
-          {/* Agent Menu Popover */}
+          {/* Agent Menu */}
           {showAgentMenu && (
-            <div ref={agentMenuRef} className="absolute bottom-20 left-0 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl dark:shadow-[0_0_50px_-10px_rgba(0,0,0,0.5)] p-4 w-72 z-50 animate-in slide-in-from-bottom-2 duration-200">
-              {/* Keep agent menu content same but styled dark */}
-              <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200 dark:border-white/5">
-                <span className="font-bold text-sm text-slate-800 dark:text-slate-200">Active Research Agents</span>
-                <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-950/30 px-2 py-0.5 rounded border border-cyan-200 dark:border-cyan-800/50">PRO</span>
+            <div ref={agentMenuRef} className="absolute bottom-20 left-0 bg-white/95 dark:bg-slate-800/95 backdrop-blur-2xl border border-slate-200/60 dark:border-slate-700/40 rounded-2xl shadow-glass-lg p-4 w-72 z-50 animate-slide-up">
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/50 dark:border-slate-700/30">
+                <span className="font-bold text-sm text-slate-800 dark:text-slate-200">Research Agents</span>
+                <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-500/10 px-2 py-0.5 rounded-md border border-teal-200/50 dark:border-teal-500/20">PRO</span>
               </div>
 
               <div className="space-y-1 max-h-60 overflow-y-auto custom-scrollbar pr-1">
-                {/* Re-implementing the list for clarity in this view */}
-                <label className="flex items-center space-x-3 cursor-pointer group p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors">
-                  <div className={`w-5 h-5 rounded flex items-center justify-center transition-all ${isAutoSelect ? 'bg-indigo-600 shadow-[0_0_10px_rgba(79,70,229,0.4)]' : 'border border-slate-300 dark:border-slate-600 group-hover:border-indigo-400'}`}>
+                <label className="flex items-center gap-3 cursor-pointer group p-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors">
+                  <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all ${isAutoSelect ? 'bg-gradient-to-br from-medical-500 to-teal-500 shadow-medical' : 'border border-slate-300 dark:border-slate-600 group-hover:border-medical-400'}`}>
                     {isAutoSelect && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                   </div>
                   <input type="checkbox" className="hidden" checked={isAutoSelect} onChange={() => setIsAutoSelect(!isAutoSelect)} />
                   <div>
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200 block">Auto-Pilot</span>
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 block">Auto-Pilot</span>
+                    <span className="text-xs text-slate-400">AI selects optimal agents</span>
                   </div>
                 </label>
                 {!isAutoSelect && (
-                  <div className="space-y-1 mt-2 ml-1">
-                    {[{ id: 'web', label: 'Web Search', icon: '🌐' }, { id: 'iqvia', label: 'Market Data', icon: '📊' }, { id: 'clinical', label: 'Clinical Trials', icon: '🏥' }, { id: 'patent', label: 'Patent DB', icon: '📜' }].map(agent => (
-                      <label key={agent.id} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors">
-                        <input type="checkbox" className="rounded border-slate-300 dark:border-slate-600 bg-transparent text-indigo-500 focus:ring-offset-0" checked={selectedAgents.includes(agent.id)} onChange={() => toggleAgent(agent.id)} />
+                  <div className="space-y-1 mt-2">
+                    {[
+                      { id: 'web', label: 'Web Search', icon: '🌐' },
+                      { id: 'iqvia', label: 'Market Data', icon: '📊' },
+                      { id: 'clinical', label: 'Clinical Trials', icon: '🏥' },
+                      { id: 'patent', label: 'Patent DB', icon: '📜' }
+                    ].map(agent => (
+                      <label key={agent.id} className="flex items-center gap-3 cursor-pointer p-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-xl transition-colors">
+                        <input type="checkbox" className="rounded-md border-slate-300 dark:border-slate-600 bg-transparent text-medical-500 focus:ring-offset-0" checked={selectedAgents.includes(agent.id)} onChange={() => toggleAgent(agent.id)} />
                         <span className="text-sm text-slate-600 dark:text-slate-300">{agent.icon} {agent.label}</span>
                       </label>
                     ))}
@@ -430,16 +539,16 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
             </div>
           )}
 
-          <form onSubmit={handleSend} className="chat-input group focus-within:ring-2 focus-within:ring-indigo-500/20 dark:focus-within:ring-indigo-500/20">
-            {/* Tools Button */}
+          <form onSubmit={handleSend} className="chat-input group">
             <button
               type="button"
               onClick={() => setShowAgentMenu(!showAgentMenu)}
-              className={`p-2 rounded-xl transition-all active:scale-95 ${showAgentMenu ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'}`}
+              className={`p-2.5 rounded-xl transition-all active:scale-95 ${showAgentMenu ? 'bg-medical-50 dark:bg-medical-500/10 text-medical-500' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
               title="Select Data Sources"
               disabled={isProcessing}
+              id="agent-menu-toggle"
             >
-              <Sparkles className={`w-5 h-5 ${isAutoSelect ? 'text-cyan-500 dark:text-cyan-400 filter drop-shadow-sm dark:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' : ''}`} />
+              <Sparkles className={`w-5 h-5 ${isAutoSelect ? 'text-teal-500' : ''}`} />
             </button>
 
             <input
@@ -449,7 +558,8 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
               onChange={(e) => setInput(e.target.value)}
               placeholder={sessionId ? "Ask a follow-up question..." : "Ask about a molecule, disease, or repurposing idea..."}
               disabled={!!sessionId || isSubmitting}
-              className="flex-1 bg-transparent border-none focus:ring-0 outline-none focus:outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-base font-medium px-2"
+              className="flex-1 bg-transparent border-none focus:ring-0 outline-none focus:outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm font-medium px-2"
+              id="research-input"
             />
 
             <button
@@ -457,27 +567,29 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
               disabled={(!isProcessing && !!sessionId) || (!input.trim() && !isProcessing)}
               className="btn-send relative overflow-hidden group/send"
               onClick={isProcessing ? handleStop : undefined}
+              id="research-submit"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/send:translate-y-0 transition-transform duration-300" />
               {isProcessing ? (
-                <Square className="w-5 h-5 fill-current animate-pulse" />
+                <Square className="w-4 h-4 fill-current animate-pulse" />
               ) : (
-                <Send className="w-5 h-5 ml-0.5" />
+                <Send className="w-4 h-4" />
               )}
             </button>
           </form>
+
           <div className="text-center mt-3 h-4 flex justify-center items-center gap-2">
             {!isProcessing && !sessionId && (
               <p className="text-xs font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
                 {isAutoSelect ? (
                   <>
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                     Auto-Pilot Active
                   </>
                 ) : (
                   <>
-                    <span>Active Agents:</span>
-                    <span className="text-slate-500 dark:text-slate-400">{selectedAgents.length}</span>
+                    <span>Active agents:</span>
+                    <span className="text-medical-500 font-bold">{selectedAgents.length}</span>
                   </>
                 )}
               </p>
