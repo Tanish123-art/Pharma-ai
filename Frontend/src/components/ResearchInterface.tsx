@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Download, Bot, User, Send, Square, Sparkles, TrendingUp, Heart, FlaskConical, Microscope, Pill, Activity, BarChart3, FileText, Shield } from 'lucide-react';
+import { Download, Bot, User, Send, Square, Sparkles, TrendingUp, Heart, FlaskConical, Microscope, Pill, Activity, BarChart3, FileText, Shield, Image as ImageIcon, Loader2 } from 'lucide-react';
 import api from '../lib/api';
 import ReactMarkdown from 'react-markdown';
 import AgentOutputs from './AgentOutputs';
@@ -96,37 +96,6 @@ function FeatureCard({ icon: Icon, title, description, color, onClick }: {
   );
 }
 
-/* ─── Stat Card with Animated Bar ─── */
-function StatCard({ label, value, percentage, color }: {
-  label: string; value: string; percentage: number; color: string;
-}) {
-  const [animatedWidth, setAnimatedWidth] = useState(0);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setAnimatedWidth(percentage), 500);
-    return () => clearTimeout(timer);
-  }, [percentage]);
-
-  return (
-    <div className="stat-card">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</span>
-        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{value}</span>
-      </div>
-      <div className="stat-bar">
-        <div
-          className="stat-bar-fill"
-          style={{
-            width: `${animatedWidth}%`,
-            background: color === 'medical' ? 'linear-gradient(90deg, #0ca5eb, #36bffa)' :
-                        color === 'teal' ? 'linear-gradient(90deg, #14b8a6, #5eead4)' :
-                        'linear-gradient(90deg, #22c55e, #86efac)'
-          }}
-        />
-      </div>
-    </div>
-  );
-}
 
 export default function ResearchInterface({ sessionId, onStartResearch }: ResearchInterfaceProps) {
   const [session, setSession] = useState<any>(null);
@@ -140,6 +109,8 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
   const [selectedAgents, setSelectedAgents] = useState<string[]>(['web', 'iqvia', 'clinical', 'patent', 'exim', 'internal']);
   const [showAgentMenu, setShowAgentMenu] = useState(false);
   const agentMenuRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isOcrLoading, setIsOcrLoading] = useState(false);
 
   useEffect(() => {
     if (sessionId) {
@@ -228,6 +199,29 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
       console.error("Failed to start research", error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsOcrLoading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const { data } = await api.post('/research/ocr', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (data.text) {
+        setInput(prev => prev ? `${prev}\n${data.text}` : data.text);
+      }
+    } catch (error) {
+      console.error("OCR failed", error);
+    } finally {
+      setIsOcrLoading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -341,12 +335,6 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
                 </p>
               </div>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-3 w-full max-w-xl relative z-10">
-                <StatCard label="Active Trials" value="12,847" percentage={78} color="medical" />
-                <StatCard label="Patents Indexed" value="2.1M+" percentage={92} color="teal" />
-                <StatCard label="Molecules" value="48,392" percentage={65} color="green" />
-              </div>
 
               {/* Feature Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl text-left relative z-10">
@@ -561,6 +549,29 @@ export default function ResearchInterface({ sessionId, onStartResearch }: Resear
               className="flex-1 bg-transparent border-none focus:ring-0 outline-none focus:outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm font-medium px-2"
               id="research-input"
             />
+
+            <div className="flex items-center gap-1.5 px-1">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isOcrLoading || !!sessionId}
+                className="p-2 text-slate-400 hover:text-medical-500 dark:hover:text-medical-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
+                title="Upload Document Image (OCR)"
+              >
+                {isOcrLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <ImageIcon className="w-5 h-5" />
+                )}
+              </button>
+            </div>
 
             <button
               type="submit"

@@ -32,3 +32,5 @@ accelerate
 accelerate
 peft
 safetensors
+easyocr
+opencv-python-headless

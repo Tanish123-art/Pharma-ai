@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Bell, Menu, Heart, Activity } from 'lucide-react';
+import { Bell, Menu, Heart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../lib/api';
 import Sidebar from './Sidebar';
@@ -86,7 +86,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
   return (
     <div className="flex h-screen medical-bg overflow-hidden relative text-slate-800 dark:text-slate-200 font-sans selection:bg-medical-500/20 transition-colors duration-500">
       {/* Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-80 opacity-100 translate-x-0' : 'w-0 opacity-0 -translate-x-10'} transition-all duration-500 ease-out z-20 flex-shrink-0`}>
+      <div className={`${isSidebarOpen ? 'w-80 opacity-100' : 'w-0 opacity-0 pointer-events-none'} transition-all duration-500 ease-in-out z-20 flex-shrink-0 overflow-hidden`}>
         <Sidebar
           sessions={recentSessions}
           activeSessionId={activeSessionId}
@@ -121,10 +121,6 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                   PHARMA
                 </span>
                 <span className="font-light text-medical-500 text-sm">AI</span>
-                <div className="hidden sm:flex items-center gap-1.5 ml-3 px-2.5 py-1 bg-teal-50 dark:bg-teal-500/10 rounded-lg border border-teal-200/50 dark:border-teal-500/20">
-                  <Activity className="w-3 h-3 text-teal-500" />
-                  <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">Research</span>
-                </div>
               </div>
             </div>
           </div>
@@ -160,22 +156,23 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             onStartResearch={startNewResearch}
           />
         </div>
-
-        {/* Notifications Overlay */}
-        {showNotifications && (
-          <div className="fixed inset-0 z-50 bg-black/10 dark:bg-black/30 backdrop-blur-sm flex justify-end">
-            <div className="w-full max-w-md h-full animate-slide-down">
-              <NotificationsPanel onClose={() => setShowNotifications(false)} onUpdateCount={setUnreadCount} />
-            </div>
-            <div className="flex-1" onClick={() => setShowNotifications(false)} />
-          </div>
-        )}
-
-        {/* Settings */}
-        {showSettings && (
-          <SettingsPanel onClose={() => setShowSettings(false)} />
-        )}
       </div>
+
+      {/* Overlays (Notifications & Settings) Moved outside main content to handle z-index correctly */}
+      {showNotifications && (
+        <div className="fixed inset-0 z-[100] bg-black/10 dark:bg-black/30 backdrop-blur-sm flex justify-end">
+          <div className="w-full max-w-md h-full animate-slide-down">
+            <NotificationsPanel onClose={() => setShowNotifications(false)} onUpdateCount={setUnreadCount} />
+          </div>
+          <div className="flex-1" onClick={() => setShowNotifications(false)} />
+        </div>
+      )}
+
+      {showSettings && (
+        <div className="fixed inset-0 z-[100]">
+          <SettingsPanel onClose={() => setShowSettings(false)} />
+        </div>
+      )}
     </div>
   );
 }

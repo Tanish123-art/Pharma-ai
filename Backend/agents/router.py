@@ -1,12 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect, File, UploadFile
 from typing import List
 from agents.models import ResearchQuery, ResearchSession, ResearchStatus
 from agents.research_service import ResearchService
 from agents.orchestrator import AgentOrchestrator
+from agents.ocr_agent import ocr_agent
 from auth.dependencies import get_current_user
 from auth.models import UserInDB
 import asyncio
 import json
+import os
+import glob
+from fastapi.responses import FileResponse
 
 router = APIRouter(prefix="/research", tags=["research"])
 
@@ -276,6 +280,20 @@ async def chat_interaction(
         "response": f"I analyzed '{query}' using the backend agents. This is a simulated response for the demo."
     }
 
+@router.post("/ocr")
+async def perform_ocr(
+    file: UploadFile = File(...),
+    current_user: UserInDB = Depends(get_current_user)
+):
+    """Extract text from a document image using EasyOCR"""
+    try:
+        content = await file.read()
+        result = ocr_agent.process_image(content)
+        return result
+    except Exception as e:
+        print(f"OCR Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/reports/{session_id}/download")
 async def download_report(
     session_id: str,
@@ -305,7 +323,6 @@ async def download_report(
              else:
                  raise HTTPException(status_code=404, detail=f"Report not found in {reports_dir}")
 
-        from fastapi.responses import FileResponse
         return FileResponse(report_path, media_type='application/pdf', filename=os.path.basename(report_path))
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
