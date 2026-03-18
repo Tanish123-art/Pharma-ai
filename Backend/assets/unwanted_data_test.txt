@@ -1,0 +1,15 @@
+SECRET PHARMA DOCUMENT - CONFIDENTIAL
+
+Subject: Project "X-Alpha" Unwanted Data Test
+Date: 2026-03-16
+
+This is a piece of unwanted dummy data generated for testing the Internal Knowledge Agent RAG pipeline.
+If you see this, it means the RAG system correctly retrieved this message from the Pinecone vector database.
+
+Project Details:
+- Target: Experimental drug repurposing for Rare Disease Y.
+- Status: Pre-clinical investigation.
+- Findings: Preliminary results show high binding affinity to target protein P53.
+
+Note: This data is not intended for clinical use and is purely for system validation.
+The PharmaAI system uses BGE-M3 for embedding these documents.

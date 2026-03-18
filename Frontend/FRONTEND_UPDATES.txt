@@ -1,0 +1,96 @@
+// Add these functions to ResearchInterface.tsx after the existing functions
+
+// Add stop research function (add after line 163)
+const stopResearch = async () => {
+  if (!sessionId) return;
+  
+  try {
+    await api.post(`/research/sessions/${sessionId}/stop`);
+    await loadSession(); // Reload to show cancelled status
+  } catch (error) {
+    console.error("Error stopping research:", error);
+  }
+};
+
+// Add download PDF function (add after stopResearch)
+const downloadPDF = async () => {
+  if (!sessionId) return;
+  
+  try {
+    const response = await api.get(`/reports/session/${sessionId}`);
+    if (response.data && response.data.download_url) {
+      // Open download URL in new tab
+      const downloadUrl = `http://localhost:8000${response.data.download_url}`;
+      window.open(downloadUrl, '_blank');
+    }
+  } catch (error) {
+    console.error("Error downloading PDF:", error);
+    alert("PDF report not yet generated. Please wait for research to complete.");
+  }
+};
+
+// UPDATE: Add stop button to the header section (around line 282-293)
+// Replace the existing header section with:
+
+<div className="flex items-center space-x-4">
+  <div className="flex items-center space-x-2">
+    <Clock className="w-5 h-5 text-slate-400" />
+    <span className="text-sm font-mono text-slate-600">{formatTime(elapsedTime)}</span>
+  </div>
+  
+  {/* Stop Button - only show when research is running */}
+  {(session.status === 'processing' || session.status === 'running') && (
+    <button
+      onClick={stopResearch}
+      className="flex items-center space-x-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+    >
+      <XCircle className="w-4 h-4" />
+      <span>Stop Research</span>
+    </button>
+  )}
+  
+  {/* Download PDF Button - only show when completed */}
+  {session.status === 'completed' && (
+    <button
+      onClick={downloadPDF}
+      className="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+    >
+      <CheckCircle className="w-4 h-4" />
+      <span>Download PDF Report</span>
+    </button>
+  )}
+  
+  <span className={`px-3 py-1 text-sm font-medium rounded-full ${
+    session.status === 'completed' ? 'bg-green-100 text-green-700' :
+    session.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+    (session.status === 'processing' || session.status === 'running') ? 'bg-blue-100 text-blue-700' :
+    'bg-slate-100 text-slate-700'
+  }`}>
+    {session.status}
+  </span>
+</div>
+
+// UPDATE: Fix progress bar to use real-time updates from backend
+// The simulateProgress function (line 72) already syncs with backend agent_statuses
+// Make sure the progress bars reflect the backend status correctly
+
+// UPDATE: Ensure the loadSession function is called more frequently for real-time updates
+// Modify the useEffect at line 30-41 to poll more frequently:
+
+useEffect(() => {
+  if (sessionId) {
+    loadSession();
+    // Poll every 2 seconds for real-time updates
+    const interval = setInterval(loadSession, 2000);
+    const timer = setInterval(() => setElapsedTime(t => t + 1), 1000);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(timer);
+    };
+  }
+}, [sessionId]);
+
+// IMPORTANT: Import XCircle at the top if not already imported
+// Line 2 should be:
+import { ArrowLeft, Clock, CheckCircle, Loader, XCircle, Play, Pause, Download } from 'lucide-react';
