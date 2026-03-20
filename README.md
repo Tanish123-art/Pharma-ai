@@ -2,7 +2,6 @@
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
   <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
   <img src="https://img.shields.io/badge/LangGraph-FF6F00?style=for-the-badge&logo=langchain&logoColor=white" />
   <img src="https://img.shields.io/badge/Pinecone-00A98F?style=for-the-badge&logo=pinecone&logoColor=white" />
@@ -80,7 +79,7 @@ The central intelligence that drives the entire research pipeline.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Frontend (React + TS)                    │
+│                        Frontend (React)                         │
 │   Dashboard │ Chat │ Upload │ Reports │ Notifications │ History │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ REST + WebSocket
@@ -133,7 +132,7 @@ The central intelligence that drives the entire research pipeline.
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | React, TypeScript, Vite, TailwindCSS, Recharts, Mermaid |
+| **Frontend** | React, Vite, TailwindCSS, Recharts, Mermaid |
 | **Backend** | FastAPI (Python), Uvicorn |
 | **Agent Framework** | LangChain, LangGraph (stateful multi-agent orchestration) |
 | **LLM** | Qwen-2.5-Coder via Lightning Studio / vLLM, Google Gemini (fallback) |
