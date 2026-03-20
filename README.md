@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
-  <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />
   <img src="https://img.shields.io/badge/LangGraph-FF6F00?style=for-the-badge&logo=langchain&logoColor=white" />
@@ -133,8 +133,8 @@ The central intelligence that drives the entire research pipeline.
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | React 18, TypeScript, Vite, TailwindCSS, Recharts, Mermaid |
-| **Backend** | FastAPI (Python 3.12+), Uvicorn |
+| **Frontend** | React, TypeScript, Vite, TailwindCSS, Recharts, Mermaid |
+| **Backend** | FastAPI (Python), Uvicorn |
 | **Agent Framework** | LangChain, LangGraph (stateful multi-agent orchestration) |
 | **LLM** | Qwen-2.5-Coder via Lightning Studio / vLLM, Google Gemini (fallback) |
 | **Embeddings** | BGE-M3 (local) via HuggingFace |
@@ -150,7 +150,7 @@ The central intelligence that drives the entire research pipeline.
 
 | Requirement | Version |
 |---|---|
-| Python | 3.12+ |
+| Python | Required |
 | Node.js | 18+ |
 | MongoDB | 6.0+ (local or Atlas) |
 | Pinecone | API key required |
