@@ -8,7 +8,7 @@
 
 # 🧬 PharmaAI — Agentic AI Platform for Drug Discovery & Repurposing
 
-> **A multi-agent AI system that orchestrates 8 specialized agents to transform complex pharmaceutical queries into actionable market intelligence, clinical insights, and strategic research — in minutes, not months.**
+> **A multi-agent AI system that orchestrates 7 specialized agents to transform complex pharmaceutical queries into actionable market intelligence, clinical insights, and strategic research — in minutes, not months.**
 
 ---
 
